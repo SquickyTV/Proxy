@@ -2,11 +2,27 @@
 <html>
 <head>
   <title>Proxy</title>
+  <style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    overflow: hidden;
+    background: black;
+  }
+  #virtualComputerDiv {
+    cursor: none;
+    width: 100vw;
+    height: 100vh;
+  }
+</style>
 </head>
 <body>
 
   
-  <div id="virtualComputerDiv" style="height:720px; width:1280px; cursor:none"></div>
+  <div id="virtualComputerDiv" style="cursor:none; width:100vw; height:100vh; display:block;"></div>
 
   <script>
     if ('serviceWorker' in navigator) {
