@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Proxy</title>
+</head>
+<body>
+
+  
+  <div id="virtualComputerDiv" style="height:720px; width:1280px; cursor:none"></div>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        for (let reg of registrations) {
+          reg.unregister();
+        }
+      });
+      navigator.serviceWorker.getRegistrations().then(r => {
+        if (r.length > 0) location.reload();
+      });
+    }
+  </script>
+
+  <script type="module">
+    import Hyperbeam from "https://unpkg.com/@hyperbeam/web@latest/dist/index.js"
+    const resp = await fetch("/computer")
+    const data = await resp.json()
+    if (!data.embed_url) {
+      console.error("No embed_url! Got:", JSON.stringify(data))
+    } else {
+      const hb = await Hyperbeam(virtualComputerDiv, data.embed_url)
+      hb.tabs.onUpdated.addListener((tabId, changeInfo) => {
+        if (changeInfo.title)
+          currentSite.innerText = changeInfo.title
+      })
+    }
+  </script>
+
+</body>
+</html>
