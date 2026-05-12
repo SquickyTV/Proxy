@@ -37,20 +37,22 @@
     }
   </script>
 
-  <script type="module">
-    import Hyperbeam from "https://unpkg.com/@hyperbeam/web@latest/dist/index.js"
-    const resp = await fetch("/computer")
-    const data = await resp.json()
-    if (!data.embed_url) {
-      console.error("No embed_url! Got:", JSON.stringify(data))
-    } else {
-      const hb = await Hyperbeam(virtualComputerDiv, data.embed_url)
-      hb.tabs.onUpdated.addListener((tabId, changeInfo) => {
-        if (changeInfo.title)
-          currentSite.innerText = changeInfo.title
-      })
-    }
-  </script>
+<script type="module">
+  import Hyperbeam from "https://unpkg.com/@hyperbeam/web@latest/dist/index.js"
 
+  const resp = await fetch("/computer")
+  const data = await resp.json()
+
+  if (!data.embed_url) {
+    document.body.innerText = "No sessions available, please try again later."
+  } else {
+    const hb = await Hyperbeam(virtualComputerDiv, data.embed_url)
+
+    // Free the session when user leaves
+    window.addEventListener("beforeunload", () => {
+      navigator.sendBeacon(`/computer/${data.session_id}`, JSON.stringify({ method: "DELETE" }))
+    })
+  }
+</script>
 </body>
 </html>
